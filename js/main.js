@@ -5,7 +5,7 @@ var vestingShares,
     totalVestingFundSteem = null;
 
 getGlobalProps()
-  .then(getAccounts(['dan', 'ned']))
+  .then(getAccounts(['utopian-io', 'ned']))
 
 function getGlobalProps(){
   var globalProps = steem.api.getDynamicGlobalProperties(function(err, result) {
@@ -51,6 +51,14 @@ function getAccounts(accounts){
             var outgoingSteemPower = steem.formatter.vestToSteem((delegatedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem);
 
             console.log(steemPower, delegatedSteemPower, outgoingSteemPower);
+
+
+            var lastVoteTime = (new Date - new Date(user.last_vote_time + "Z")) / 1000;
+            var votePower = user.voting_power += (10000 * lastVoteTime / 432000);
+            votePower = Math.min(votePower / 100, 100).toFixed(2);
+
+            console.log('votePower', votePower);
+
       });
     });
 };
