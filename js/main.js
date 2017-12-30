@@ -15,5 +15,8 @@ steem.api.getAccounts(['dan', 'ned'], function(err, response){
       });
       console.log("NUM OF POSTS", user.post_count);
 
+      steem.formatter.estimateAccountValue(user).then(function(value) {
+          console.log(user.name + ' $$$ EST USD VALUE',value);
+      });
   });
 });
