@@ -24,7 +24,7 @@ function getAccounts(accounts){
 
           console.log("IMAGE", jsonData.profile_image ? 'https://steemitimages.com/2048x512/' + jsonData.profile_image : '')
           console.log(user.name);
-          console.log('REPUTATION');
+          console.log('REPUTATION', steem.formatter.reputation(user.reputation));
           console.log('STEEM POWER');
           console.log('STEEM', user.balance);
           console.log('STEEM DOLLARS', user.sbd_balance);
