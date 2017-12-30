@@ -12,7 +12,17 @@
         <script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
         <script>
           steem.api.getAccounts(['dan', 'ned'], function(err, response){
-            console.log(response);
+            response.forEach( function(user){
+                console.log('IMAGE')
+                console.log(user.name);
+                console.log('REPUTATION');
+                console.log('STEEM POWER');
+                console.log('STEEM');
+                console.log('STEEM DOLLARS');
+                console.log('Followers');
+                console.log('Following');
+                console.log('NUM OF POSTS');
+            });
           });
         </script>
     </body>
