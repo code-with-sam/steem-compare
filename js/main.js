@@ -4,8 +4,13 @@ var vestingShares,
     totalVestingShares,
     totalVestingFundSteem = null;
 
+var activeAccounts = [];
+
 getGlobalProps()
-  .then(getAccounts(['utopian-io', 'ned']))
+  .then(getAccounts(['utopian-io', 'sambillingham']))
+  .then(function(){
+    console.log(activeAccounts);
+  })
 
 function getGlobalProps(){
   var globalProps = steem.api.getDynamicGlobalProperties(function(err, result) {
@@ -17,47 +22,53 @@ function getGlobalProps(){
 
 
 function getAccounts(accounts){
-    steem.api.getAccounts(accounts, function(err, response){
+
+    return steem.api.getAccounts(accounts, function(err, response){
       response.forEach( function(user){
-          console.log(user)
+          // store meta Data
           var jsonData = user.json_metadata ? JSON.parse(user.json_metadata).profile : {}
 
-          console.log("IMAGE", jsonData.profile_image ? 'https://steemitimages.com/2048x512/' + jsonData.profile_image : '')
-          console.log(user.name);
-          console.log('REPUTATION', steem.formatter.reputation(user.reputation));
-          console.log('STEEM POWER');
-          console.log('STEEM', user.balance);
-          console.log('STEEM DOLLARS', user.sbd_balance);
-
-          steem.api.getFollowCount( user.name , function(err, user) {
-            console.log("Followers", user.follower_count);
-            console.log("Following", user.following_count);
-          });
-          console.log("NUM OF POSTS", user.post_count);
-
-          steem.formatter.estimateAccountValue(user).then(function(value) {
-              console.log(user.name + ' $$$ EST USD VALUE',value);
-          });
-
+          // steem power calc
           var vestingShares = user.vesting_shares;
           var delegatedVestingShares = user.delegated_vesting_shares;
           var receivedVestingShares = user.received_vesting_shares;
+          var steemPower = steem.formatter.vestToSteem(vestingShares, totalVestingShares, totalVestingFundSteem);
+          var delegatedSteemPower = steem.formatter.vestToSteem((receivedVestingShares.split(' ')[0]-delegatedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem);
+          var outgoingSteemPower = steem.formatter.vestToSteem((receivedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem) - delegatedSteemPower;
 
-          console.log(vestingShares, delegatedVestingShares, receivedVestingShares )
+          // vote power calc
+          var lastVoteTime = (new Date - new Date(user.last_vote_time + "Z")) / 1000;
+          var votePower = user.voting_power += (10000 * lastVoteTime / 432000);
+          votePower = Math.min(votePower / 100, 100).toFixed(2);
 
+          var followerCount, followingCount, usdValue;
 
-            var steemPower = steem.formatter.vestToSteem(vestingShares, totalVestingShares, totalVestingFundSteem);
-            var delegatedSteemPower = steem.formatter.vestToSteem((receivedVestingShares.split(' ')[0]-delegatedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem);
-            var outgoingSteemPower = steem.formatter.vestToSteem((delegatedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem);
+          steem.api.getFollowCount( user.name , function(err, user) {
+            followerCount = user.follower_count;
+            followingCount = user.following_count;
+          }).then( function(){
 
-            console.log(steemPower, delegatedSteemPower, outgoingSteemPower);
+            return steem.formatter.estimateAccountValue(user).then(function(value) {
+              usdValue = value;
+            });
+          }).then(function(){
+            activeAccounts.push({
+              name: user.name,
+              image: jsonData.profile_image ? 'https://steemitimages.com/2048x512/' + jsonData.profile_image : '',
+              rep: steem.formatter.reputation(user.reputation),
+              sp: steemPower,
+              delegatedSpIn: delegatedSteemPower,
+              delegatedSpOut: outgoingSteemPower,
+              vp: votePower,
+              steem: user.balance,
+              sbd: user.sbd_balance,
+              numOfPosts: user.post_count,
+              followerCount: followerCount,
+              followingCount: followingCount,
+              usdValue: usdValue
+            });
+          })
 
-
-            var lastVoteTime = (new Date - new Date(user.last_vote_time + "Z")) / 1000;
-            var votePower = user.voting_power += (10000 * lastVoteTime / 432000);
-            votePower = Math.min(votePower / 100, 100).toFixed(2);
-
-            console.log('votePower', votePower);
 
       });
     });
