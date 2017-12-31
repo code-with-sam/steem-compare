@@ -1,53 +1,35 @@
-var vestingShares,
+let vestingShares,
     delegatedVestingShares,
     receivedVestingShares,
     totalVestingShares,
     totalVestingFundSteem = null;
 
-$('.grid').on('click', '.remove-user', function(){
-  $(this).parent().remove();
-});
+// UI CONTROLS
+$('.grid').on('click', '.remove-user', (e) => $(e.currentTarget).parent().remove());
 
-$('.search-btn').on('click', function(){
+$('.search-btn').on('click', (e) => {
   let data = $('.search').val();
-  let users = data.split(',').map(function(user) {
-    return user.trim();
-  });
-  // console.log(users);
+  let users = data.split(',').map(user => user.trim() );
   addUsers(users)
 });
 
-function addUsers(users){
-  getAccounts(users).then(function(data){
+//setups
+getGlobalProps()
+  // for testing only
+  .then( addUsers(['ned', 'dan', 'blocktrades']))
+  // testing
 
-      displayAccounts(proccessData(data));
-  });
+function addUsers(users){
+  getAccounts(users)
+    .then(data => proccessData(data))
+    .then(data => displayAccounts(data))
 }
 
-getGlobalProps()
-  .then(function(){
-    return getAccounts(['ned', 'dan', 'blocktrades'])
-  })
-  .then(function(data){
-
-    proccessData(data).then((data) => {
-      console.log(data)
-      displayAccounts(data);
-
-    })
-    // console.log(data)
-    // console.log(proccessData(data));
-
-    // displayAccounts(proccessData(data));
-  })
-
-
 function displayAccounts(accounts){
-  var $grid = $('.grid');
+  let $grid = $('.grid');
 
-  accounts.forEach(function(user){
-    // console.log(user);
-    var template =
+  accounts.forEach(user => {
+    let template =
       `<div class="col-md-3 col-sm-4">
       <img src="${user.image}" class="rounded-circle" height="100px" width="100px">
       <h2>${user.name} <span class="badge badge-secondary">${user.rep}</span></h2>
@@ -68,64 +50,45 @@ function displayAccounts(accounts){
 
       <button type="button" class="btn btn-dark remove-user">Remove</button>
       </div>`;
-      // console.log(template)
       $grid.append(template);
   })
 
 }
+
 function getGlobalProps(){
-  var globalProps = steem.api.getDynamicGlobalProperties(function(err, result) {
+  return steem.api.getDynamicGlobalProperties((err, result) => {
     totalVestingShares = result.total_vesting_shares;
     totalVestingFundSteem = result.total_vesting_fund_steem;
   })
-  return globalProps
 }
 
 
 function getAccounts(accountNames){
-    return steem.api.getAccounts(accountNames, function(err, response){
-      return response;
-    })
+    return steem.api.getAccounts(accountNames, (err, response) => response )
 };
 
 function proccessData(accounts){
 
-  var accountsData = [];
+  let accountsData = [];
 
   let processAllData = new Promise((resolve, reject) => {
-  // We call resolve(...) when what we were doing asynchronously was successful, and reject(...) when it failed.
-  // In this example, we use setTimeout(...) to simulate async code.
-  // In reality, you will probably be using something like XHR or an HTML5 API.
 
-
-  accounts.forEach( function(user){
+  accounts.forEach( user => {
     // store meta Data
-    var jsonData = user.json_metadata ? JSON.parse(user.json_metadata).profile : {}
+    let jsonData = user.json_metadata ? JSON.parse(user.json_metadata).profile : {}
 
     // steem power calc
-    var vestingShares = user.vesting_shares;
-    var delegatedVestingShares = user.delegated_vesting_shares;
-    var receivedVestingShares = user.received_vesting_shares;
-    var steemPower = steem.formatter.vestToSteem(vestingShares, totalVestingShares, totalVestingFundSteem);
-    var delegatedSteemPower = steem.formatter.vestToSteem((receivedVestingShares.split(' ')[0]-delegatedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem);
-    var outgoingSteemPower = steem.formatter.vestToSteem((receivedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem) - delegatedSteemPower;
+    let vestingShares = user.vesting_shares;
+    let delegatedVestingShares = user.delegated_vesting_shares;
+    let receivedVestingShares = user.received_vesting_shares;
+    let steemPower = steem.formatter.vestToSteem(vestingShares, totalVestingShares, totalVestingFundSteem);
+    let delegatedSteemPower = steem.formatter.vestToSteem((receivedVestingShares.split(' ')[0]-delegatedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem);
+    let outgoingSteemPower = steem.formatter.vestToSteem((receivedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem) - delegatedSteemPower;
 
     // vote power calc
-    var lastVoteTime = (new Date - new Date(user.last_vote_time + "Z")) / 1000;
-    var votePower = user.voting_power += (10000 * lastVoteTime / 432000);
+    let lastVoteTime = (new Date - new Date(user.last_vote_time + "Z")) / 1000;
+    let votePower = user.voting_power += (10000 * lastVoteTime / 432000);
     votePower = Math.min(votePower / 100, 100).toFixed(2);
-
-    // var followerCount, followingCount, usdValue;
-
-    // steem.api.getFollowCount( user.name , function(err, user) {
-    //   followerCount = user.follower_count;
-    //   followingCount = user.following_count;
-    // }).then( function(){
-    //
-    //   return steem.formatter.estimateAccountValue(user).then(function(value) {
-    //     usdValue = value;
-    //   });
-    // })
 
     accountsData.push({
       name: user.name,
@@ -144,35 +107,27 @@ function proccessData(accounts){
     });
   });
 
-  var promises = [];
-  // accountsData.forEach() => { }
-  for (var i = 0; i < accountsData.length; i++) {
-    promises.push( steem.api.getFollowCount( accountsData[i].name ))
-  }
-  Promise.all(promises)
-    .then((data) => {
-        for (var i = 0; i < data.length; i++) {
+  let followerAndFollowingCount = accountsData.map( user => steem.api.getFollowCount(user.name))
+
+  Promise.all(followerAndFollowingCount)
+    .then(data => {
+        for (let i = 0; i < data.length; i++) {
           accountsData[i].followerCount = data[i].follower_count
           accountsData[i].followingCount = data[i].following_count
         }
     })
 
-  var usdValues = [];
-
-  for (var i = 0; i < accountsData.length; i++) {
-    usdValues.push(steem.formatter.estimateAccountValue( accounts[i]))
-  }
+  let usdValues = accounts.map( user => steem.formatter.estimateAccountValue(user) )
 
   Promise.all(usdValues)
-    .then((data) => {
-        for (var i = 0; i < data.length; i++) {
+    .then(data => {
+        for (let i = 0; i < data.length; i++) {
           accountsData[i].usdValue = data[i]
         }
-        resolve(accountsData); // return promise
+        resolve(accountsData);
     })
 
   });
 
   return processAllData;
-
 }
