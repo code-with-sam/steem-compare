@@ -4,8 +4,16 @@ let vestingShares,
     totalVestingShares,
     totalVestingFundSteem = null;
 
+let displayedAccounts = [];
+
 // UI CONTROLS
-$('.grid').on('click', '.remove-user', (e) => $(e.currentTarget).parent().remove());
+$('.grid').on('click', '.remove-user', (e) => {
+  let user = $(e.currentTarget).parent().data('name');
+  let index = displayedAccounts.findIndex(item => item.name === user);
+  displayedAccounts.splice(index, 1);
+  $(e.currentTarget).parent().remove()
+  console.log(displayedAccounts)
+});
 
 $('.search-btn').on('click', (e) => {
   let data = $('.search').val();
@@ -13,7 +21,11 @@ $('.search-btn').on('click', (e) => {
   addUsers(users)
 });
 
-$('.clear-btn').on('click', (e) => $('.grid').empty())
+$('.clear-btn').on('click', (e) => {
+  $('.grid').empty()
+  displayedAccounts = [];
+  console.log(displayedAccounts)
+})
 
 //setups
 getGlobalProps()
@@ -27,12 +39,19 @@ function addUsers(users){
     .then(data => displayAccounts(data))
 }
 
-function displayAccounts(accounts){
+function displayAccounts(newAccounts){
+
+  let allAccounts = displayedAccounts.concat(newAccounts);
+  let allAccountsNoDup = removeDuplicates(allAccounts, 'name');
+  displayedAccounts = allAccountsNoDup
+  console.log(displayedAccounts)
+
   let $grid = $('.grid');
 
-  accounts.forEach(user => {
+  $('.grid').empty();
+  allAccountsNoDup.forEach(user => {
     let template =
-      `<div class="col-lg-3 col-md-4 col-sm-6">
+      `<div class="col-lg-3 col-md-4 col-sm-6" data-name="@${user.name}">
       <a href="https://steemit.com/@${user.name}" class="user-link"><img src="${user.image}" class="rounded-circle" height="80px" width="80px"></a>
       <li><a href="https://steemit.com/@${user.name}" class="user-value user-name user-link">${user.name}</a> <span class="badge badge-secondary">${user.rep}</span></li>
       <li>EFFECTIVE SP: <span class="user-value">${ user.effectiveSp }</span></li>
@@ -50,6 +69,7 @@ function displayAccounts(accounts){
 
       <li>Followers: <span class="user-value">${user.followerCount}</span></li>
       <li>Following: <span class="user-value">${user.followingCount}</span></li>
+
       <li><span class="user-value">💵 $${user.usdValue}</span></li>
 
       <button type="button" class="btn btn-secondary btn-sm remove-user"> X Remove</button>
@@ -135,4 +155,10 @@ function proccessData(accounts){
   });
 
   return processAllData;
+}
+
+function removeDuplicates(myArr, prop) {
+    return myArr.filter((obj, pos, arr) => {
+        return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+    });
 }
