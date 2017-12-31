@@ -33,8 +33,8 @@ function displayAccounts(accounts){
   accounts.forEach(user => {
     let template =
       `<div class="col-lg-3 col-md-4 col-sm-6">
-      <img src="${user.image}" class="rounded-circle" height="80px" width="80px">
-      <li><span class="user-value user-name">${user.name}</span> <span class="badge badge-secondary">${user.rep}</span></li>
+      <a href="https://steemit.com/@${user.name}" class="user-link"><img src="${user.image}" class="rounded-circle" height="80px" width="80px"></a>
+      <li><a href="https://steemit.com/@${user.name}" class="user-value user-name user-link">${user.name}</a> <span class="badge badge-secondary">${user.rep}</span></li>
       <li>EFFECTIVE SP: <span class="user-value">${ user.effectiveSp }</span></li>
       <li>STEAM POWER: <span class="user-value">${user.sp} <br>(+ ${user.delegatedSpIn} - ${user.delegatedSpOut})</span></li>
 
