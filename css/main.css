@@ -36,3 +36,18 @@ a.user-name {
 a.user-link:hover {
   color: #797979;
 }
+
+footer {
+  text-align: center;
+}
+footer a {
+  text-decoration: none;
+  color: #000;
+  border-bottom: #000 1px dotted;
+  padding-bottom: 2px;
+}
+footer a:hover {
+  text-decoration: none;
+  color: #797979;
+  border-bottom: #797979 1px dotted;
+}
