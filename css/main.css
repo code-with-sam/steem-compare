@@ -1,0 +1,31 @@
+body {
+  font-family: Inconsolata, 'Courier New', Courier, monospace;
+}
+
+.grid h3,
+.grid h4 {
+  border-bottom: dotted 1px #000;
+}
+
+img {
+  border: dotted 1px #999;
+  padding: 3px;
+}
+li {
+  list-style: none;
+  padding: 9px 0;
+  border-bottom: dotted 1px #999;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 14px;
+}
+button {
+  margin-top: 20px;
+  font-size: 14px;
+}
+.user-value {
+  font-weight: 700;
+}
+.user-name {
+  font-size: 18px;
+}

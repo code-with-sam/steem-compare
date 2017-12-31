@@ -13,10 +13,12 @@ $('.search-btn').on('click', (e) => {
   addUsers(users)
 });
 
+$('.clear-btn').on('click', (e) => $('.grid').empty())
+
 //setups
 getGlobalProps()
   // for testing only
-  .then( addUsers(['ned', 'dan', 'blocktrades']))
+  .then( addUsers(['utopian-io', 'busy.org', 'blocktrades', 'sambillingham']))
   // testing
 
 function addUsers(users){
@@ -30,25 +32,27 @@ function displayAccounts(accounts){
 
   accounts.forEach(user => {
     let template =
-      `<div class="col-md-3 col-sm-4">
-      <img src="${user.image}" class="rounded-circle" height="100px" width="100px">
-      <h2>${user.name} <span class="badge badge-secondary">${user.rep}</span></h2>
-      <h3>STEAM POWER: ${user.sp}</h3>
-      <h3>STEAM POWER: ${user.sp} + ${user.delegatedSpIn} - ${user.delegatedSpOut}</h3>
+      `<div class="col-lg-3 col-md-4 col-sm-6">
+      <img src="${user.image}" class="rounded-circle" height="80px" width="80px">
+      <li><span class="user-value user-name">${user.name}</span> <span class="badge badge-secondary">${user.rep}</span></li>
+      <li>EFFECTIVE SP: <span class="user-value">${ user.effectiveSp }</span></li>
+      <li>STEAM POWER: <span class="user-value">${user.sp} <br>(+ ${user.delegatedSpIn} - ${user.delegatedSpOut})</span></li>
 
-      <div class="progress">
-        <div class="progress-bar progress-bar-striped" role="progressbar" style="width: ${user.vp}%;" aria-valuenow="${user.vp}" aria-valuemin="0" aria-valuemax="100">${user.vp}% </div>
-      </div>
+      <li>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped" role="progressbar" style="width: ${user.vp}%;" aria-valuenow="${user.vp}" aria-valuemin="0" aria-valuemax="100">Vote Power - ${user.vp}% </div>
+          </div>
+      </li>
 
-      <h4>STEEM BALANCE: ${user.steem}</h4>
-      <h4>SBD Balance: ${user.sbd}</h4>
-      <h4>POSTS: ${user.numOfPosts}</h4>
+      <li>STEEM BALANCE: <span class="user-value">${user.steem}</span></li>
+      <li>SBD Balance: <span class="user-value">${user.sbd}</span></li>
+      <li>POSTS: <span class="user-value">${user.numOfPosts}</span></li>
 
-      <h4>FollowerCount: ${user.followerCount}</h4>
-      <h4>FollowingCount: ${user.followingCount}</h4>
-      <h4>💵 USD: ${user.usdValue}</h4>
+      <li>Followers: <span class="user-value">${user.followerCount}</span></li>
+      <li>Following: <span class="user-value">${user.followingCount}</span></li>
+      <li><span class="user-value">💵 $${user.usdValue}</span></li>
 
-      <button type="button" class="btn btn-dark remove-user">Remove</button>
+      <button type="button" class="btn btn-secondary btn-sm remove-user"> X Remove</button>
       </div>`;
       $grid.append(template);
   })
@@ -82,8 +86,8 @@ function proccessData(accounts){
     let delegatedVestingShares = user.delegated_vesting_shares;
     let receivedVestingShares = user.received_vesting_shares;
     let steemPower = steem.formatter.vestToSteem(vestingShares, totalVestingShares, totalVestingFundSteem);
-    let delegatedSteemPower = steem.formatter.vestToSteem((receivedVestingShares.split(' ')[0]-delegatedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem);
-    let outgoingSteemPower = steem.formatter.vestToSteem((receivedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem) - delegatedSteemPower;
+    let delegatedSteemPower = steem.formatter.vestToSteem((receivedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem);
+    let outgoingSteemPower = steem.formatter.vestToSteem((receivedVestingShares.split(' ')[0]-delegatedVestingShares.split(' ')[0])+' VESTS', totalVestingShares, totalVestingFundSteem) - delegatedSteemPower;
 
     // vote power calc
     let lastVoteTime = (new Date - new Date(user.last_vote_time + "Z")) / 1000;
@@ -94,12 +98,13 @@ function proccessData(accounts){
       name: user.name,
       image: jsonData.profile_image ? 'https://steemitimages.com/2048x512/' + jsonData.profile_image : '',
       rep: steem.formatter.reputation(user.reputation),
-      sp: steemPower,
-      delegatedSpIn: delegatedSteemPower,
-      delegatedSpOut: outgoingSteemPower,
+      effectiveSp: parseInt(steemPower  + delegatedSteemPower - -outgoingSteemPower).toLocaleString(),
+      sp: parseInt(steemPower).toLocaleString(),
+      delegatedSpIn: parseInt(delegatedSteemPower).toLocaleString(),
+      delegatedSpOut: parseInt(-outgoingSteemPower).toLocaleString(),
       vp: votePower,
-      steem: user.balance,
-      sbd: user.sbd_balance,
+      steem: user.balance.substring(0, user.balance.length - 5),
+      sbd: user.sbd_balance.substring(0, user.sbd_balance.length - 3),
       numOfPosts: user.post_count,
       followerCount: '',
       followingCount: '',
@@ -122,7 +127,7 @@ function proccessData(accounts){
   Promise.all(usdValues)
     .then(data => {
         for (let i = 0; i < data.length; i++) {
-          accountsData[i].usdValue = data[i]
+          accountsData[i].usdValue = parseInt(data[i]).toLocaleString()
         }
         resolve(accountsData);
     })
