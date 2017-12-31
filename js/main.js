@@ -9,10 +9,9 @@ let displayedAccounts = [];
 // UI CONTROLS
 $('.grid').on('click', '.remove-user', (e) => {
   let user = $(e.currentTarget).parent().data('name');
-  let index = displayedAccounts.findIndex(item => item.name === user);
+  let index = displayedAccounts.findIndex(item => item.name === user.substr(1));
   displayedAccounts.splice(index, 1);
   $(e.currentTarget).parent().remove()
-  console.log(displayedAccounts)
 });
 
 $('.search-btn').on('click', (e) => {
@@ -24,7 +23,6 @@ $('.search-btn').on('click', (e) => {
 $('.clear-btn').on('click', (e) => {
   $('.grid').empty()
   displayedAccounts = [];
-  console.log(displayedAccounts)
 })
 
 //setups
