@@ -28,11 +28,16 @@ $('.clear-btn').on('click', (e) => {
   displayedAccounts = [];
 })
 
+$(document).ready(() => {
+  $('h1').fitText(1.5);
+})
+
 //setups
 getGlobalProps()
   // for testing only
   .then( addUsers(['utopian-io', 'busy.org', 'blocktrades', 'sambillingham']))
   // testing
+
 
 function addUsers(users){
   getAccounts(users)
