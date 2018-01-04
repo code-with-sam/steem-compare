@@ -2,7 +2,7 @@ body {
   font-family: Inconsolata, 'Courier New', Courier, monospace;
 }
 
-header {
+header.jumbotron {
   background:
   linear-gradient(
   rgba(233,236,239, 0.90),
@@ -11,6 +11,8 @@ header {
   url(../img/pattern.png);
   background-position: center;
   background-repeat: repeat;
+
+  padding-bottom: calc(2rem - 20px);
 }
 
 h1 {
@@ -36,9 +38,25 @@ label {
 .btn-group-lg>.btn, .btn-lg {
   padding: .45rem 1rem .3rem;
 }
+hr.above {
+  margin-bottom: 0.5rem;
+
+}
+hr.below {
+  margin-top: 0.5rem;
+}
+
 .searh-buttons {
   text-align: center;
 }
+.searh-buttons .btn {
+  margin-bottom: 20px;
+}
+
+.sort-buttons .btn {
+    margin: 5px 0;
+}
+
 
 .grid h3,
 .grid h4 {
@@ -59,7 +77,15 @@ li {
   border-bottom: dotted 1px #999;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-size: 14px;
+  font-size: 0.793rem;
+}
+.progress-bar {
+  padding-top: 2px;
+  font-size: 0.6rem;
+}
+.steam-calc {
+  font-size: 12px;
+  font-weight: 300;
 }
 button {
   margin-top: 20px;
@@ -93,4 +119,13 @@ footer a:hover {
   text-decoration: none;
   color: #797979;
   border-bottom: #797979 1px dotted;
+}
+
+@media (min-width: 1200px) {
+  .col-xl-15 {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
 }
