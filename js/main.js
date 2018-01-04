@@ -5,6 +5,9 @@ let vestingShares,
     totalVestingFundSteem = null;
 
 let displayedAccounts = [];
+let $grid;
+
+let mixer;
 
 // UI CONTROLS
 $('.grid').on('click', '.remove-user', (e) => {
@@ -44,15 +47,24 @@ function displayAccounts(newAccounts){
   displayedAccounts = allAccountsNoDup
   console.log(displayedAccounts)
 
-  let $grid = $('.grid');
-
   $('.grid').empty();
+
+  $grid = $('.grid');
+
   allAccountsNoDup.forEach(user => {
     let template =
-      `<div class="col-lg-3 col-md-4 col-sm-6" data-name="@${user.name}">
+      `<div class="grid-item col-lg-3 col-md-4 col-sm-6"
+        data-name="@${user.name}"
+        data-reputation="${user.rep}"
+        data-steempower="${ user.effectiveSp }"
+        data-value="${user.rawUsdValue}"
+        data-postcount="${user.numOfPosts}"
+        data-followers="${user.followerCount}"
+        data-accountage="" >
+
       <a href="https://steemit.com/@${user.name}" class="user-link"><img src="${user.image}" class="rounded-circle" height="80px" width="80px"></a>
       <li><a href="https://steemit.com/@${user.name}" class="user-value user-name user-link">${user.name}</a> <span class="badge badge-secondary">${user.rep}</span></li>
-      <li>EFFECTIVE SP: <span class="user-value">${ user.effectiveSp }</span></li>
+      <li>EFFECTIVE SP: <span class="user-value">${ (user.effectiveSp).toLocaleString() }</span></li>
       <li>STEAM POWER: <span class="user-value">${user.sp} <br>(+ ${user.delegatedSpIn} - ${user.delegatedSpOut})</span></li>
 
       <li>
@@ -68,12 +80,23 @@ function displayAccounts(newAccounts){
       <li>Followers: <span class="user-value">${user.followerCount}</span></li>
       <li>Following: <span class="user-value">${user.followingCount}</span></li>
 
-      <li><span class="user-value">💵 $${user.usdValue}</span></li>
+      <li><span class="user-value">💵 $${(user.usdValue).toLocaleString()}</span></li>
 
       <button type="button" class="btn btn-secondary btn-sm remove-user"> X Remove</button>
       </div>`;
       $grid.append(template);
   })
+
+  mixer = mixitup('.grid',{
+    selectors: {
+       target: '.grid-item'
+   },
+   animation: {
+       duration: 300
+   }
+  });
+
+
 
 }
 
@@ -116,7 +139,7 @@ function proccessData(accounts){
       name: user.name,
       image: jsonData.profile_image ? 'https://steemitimages.com/2048x512/' + jsonData.profile_image : '',
       rep: steem.formatter.reputation(user.reputation),
-      effectiveSp: parseInt(steemPower  + delegatedSteemPower - -outgoingSteemPower).toLocaleString(),
+      effectiveSp: parseInt(steemPower  + delegatedSteemPower - -outgoingSteemPower),
       sp: parseInt(steemPower).toLocaleString(),
       delegatedSpIn: parseInt(delegatedSteemPower).toLocaleString(),
       delegatedSpOut: parseInt(-outgoingSteemPower).toLocaleString(),

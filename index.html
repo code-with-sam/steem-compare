@@ -30,12 +30,12 @@
         <hr>
         <div class="sort-buttons">
           <span>Sort By</span>
-          <a class="btn btn-light btn-sm clear-btn" href="#" role="button">👏 Reputation</a>
-          <a class="btn btn-light btn-sm clear-btn" href="#" role="button">💪 Effective SP</a>
-          <a class="btn btn-light btn-sm clear-btn" href="#" role="button">💵 Account Value</a>
-          <a class="btn btn-light btn-sm clear-btn" href="#" role="button">📝 Post Count</a>
-          <a class="btn btn-light btn-sm clear-btn" href="#" role="button">👨‍👩‍👧‍👦 Followers</a>
-          <a class="btn btn-light btn-sm clear-btn" href="#" role="button">⏰ Account Age</a>
+          <a class="btn btn-light btn-sm sort-btn" data-sort="reputation:descending" href="#" role="button">👏 Reputation</a>
+          <a class="btn btn-light btn-sm sort-btn" data-sort="steempower:descending" href="#" role="button">💪 Effective SP</a>
+          <a class="btn btn-light btn-sm sort-btn" data-sort="value:descending" href="#" role="button">💵 Account Value</a>
+          <a class="btn btn-light btn-sm sort-btn" data-sort="postcount:descending" href="#" role="button">📝 Post Count</a>
+          <a class="btn btn-light btn-sm sort-btn" data-sort="followers:descending" href="#" role="button">👨‍👩‍👧‍👦 Followers</a>
+          <a class="btn btn-light btn-sm sort-btn" data-sort="accountage:descending" href="#" role="button">⏰ Account Age</a>
         </div>
         <hr>
 
@@ -52,6 +52,7 @@
 
         <script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mixitup/3.2.2/mixitup.min.js"></script>
         <script src="js/main.js"></script>
     </body>
 </html>
