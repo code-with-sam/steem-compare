@@ -58,32 +58,34 @@ function displayAccounts(newAccounts){
 
   allAccountsNoDup.forEach(user => {
     let template =
-      `<div class="grid-item col-lg-3 col-md-4 col-sm-6"
+      `<div class="grid-item col-xl-15 col-lg-3 col-md-4 col-6"
         data-name="@${user.name}"
         data-reputation="${user.rep}"
         data-steempower="${ user.effectiveSp }"
-        data-value="${user.rawUsdValue}"
+        data-value="${user.usdValue}"
         data-postcount="${user.numOfPosts}"
         data-followers="${user.followerCount}"
-        data-accountage="" >
+        data-accountage="${user.accountAgeMilliseconds}" >
 
       <a href="https://steemit.com/@${user.name}" class="user-link"><img src="${user.image}" class="rounded-circle" height="80px" width="80px"></a>
       <li><a href="https://steemit.com/@${user.name}" class="user-value user-name user-link">${user.name}</a> <span class="badge badge-secondary">${user.rep}</span></li>
       <li>EFFECTIVE SP: <span class="user-value">${ (user.effectiveSp).toLocaleString() }</span></li>
-      <li>STEAM POWER: <span class="user-value">${user.sp} <br>(+ ${user.delegatedSpIn} - ${user.delegatedSpOut})</span></li>
+      <li>STEEMPOWER: <span class="user-value">${user.sp} <br><span class="steam-calc">(+ ${user.delegatedSpIn} - ${user.delegatedSpOut})</span></span></li>
 
       <li>
         <div class="progress">
-          <div class="progress-bar progress-bar-striped" role="progressbar" style="width: ${user.vp}%;" aria-valuenow="${user.vp}" aria-valuemin="0" aria-valuemax="100">Vote Power - ${user.vp}% </div>
+          <div class="progress-bar progress-bar-striped" role="progressbar" style="width: ${user.vp}%;" aria-valuenow="${user.vp}" aria-valuemin="0" aria-valuemax="100">Vote Power ${user.vp}%</div>
           </div>
       </li>
 
-      <li>STEEM BALANCE: <span class="user-value">${user.steem}</span></li>
-      <li>SBD Balance: <span class="user-value">${user.sbd}</span></li>
+      <li>STEEM BALANCE: <span class="user-value">${parseInt(user.steem)}</span></li>
+      <li>SBD Balance: <span class="user-value">${parseInt(user.sbd)}</span></li>
       <li>POSTS: <span class="user-value">${user.numOfPosts}</span></li>
 
       <li>Followers: <span class="user-value">${user.followerCount}</span></li>
       <li>Following: <span class="user-value">${user.followingCount}</span></li>
+
+      <li>Age: <span class="user-value">${ (user.accountAge) }</span></li>
 
       <li><span class="user-value">💵 $${(user.usdValue).toLocaleString()}</span></li>
 
@@ -154,9 +156,12 @@ function proccessData(accounts){
       numOfPosts: user.post_count,
       followerCount: '',
       followingCount: '',
-      usdValue: ''
+      usdValue: '',
+      accountAgeMilliseconds: moment(user.created).valueOf(),
+      accountAge: calcRelativeAge(user.created)
     });
   });
+
 
   let followerAndFollowingCount = accountsData.map( user => steem.api.getFollowCount(user.name))
 
@@ -173,7 +178,7 @@ function proccessData(accounts){
   Promise.all(usdValues)
     .then(data => {
         for (let i = 0; i < data.length; i++) {
-          accountsData[i].usdValue = parseInt(data[i]).toLocaleString()
+          accountsData[i].usdValue = parseInt(data[i])
         }
         resolve(accountsData);
     })
@@ -181,6 +186,30 @@ function proccessData(accounts){
   });
 
   return processAllData;
+}
+
+function calcRelativeAge(date){
+  let now = moment();
+  let dateCalc = moment(date);
+  let calcDiff = dateCalc.diff(now);
+  console.log(now)
+  console.log(dateCalc)
+
+  var age = moment.duration(calcDiff);
+
+  let relativeAge = `${-age.days()}D`
+
+  console.log(-age.days(), 'days')
+  console.log(-age.months(), 'months')
+  console.log(-age.years(), 'years')
+
+  if(-age.months() >= 1 )
+    relativeAge = `${-age.months()}M - ${-age.days()}D`
+
+  if(-age.years() >= 1 )
+    relativeAge = `${-age.years()}Y - ${-age.months()}M`
+
+  return relativeAge;
 }
 
 function removeDuplicates(myArr, prop) {
