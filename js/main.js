@@ -35,7 +35,7 @@ $(document).ready(() => {
 //setups
 getGlobalProps()
   // for testing only
-  .then( addUsers(['utopian-io', 'busy.org', 'blocktrades', 'sambillingham']))
+  .then( addUsers(['utopian-io', 'busy.org', 'blocktrades', 'sambillingham', 'kevinwong']))
   // testing
 
 
