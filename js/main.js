@@ -13,52 +13,65 @@ let mixer;
 $('.grid').on('click', '.remove-user', (e) => {
   let user = $(e.currentTarget).parent().data('name');
   let index = displayedAccounts.findIndex(item => item.name === user.substr(1));
+  let target = '.name-'+ (user.substr(1)).replace(/\./g, '-');
+
   displayedAccounts.splice(index, 1);
-  $(e.currentTarget).parent().remove()
+
+  mixer.remove(target)
 });
 
 $('.search-btn').on('click', (e) => {
   let data = $('.search').val();
   let users = data.split(',').map(user => user.trim() );
-  addUsers(users)
+  addUsers(users, false)
 });
 
 $('.clear-btn').on('click', (e) => {
-  $('.grid').empty()
+
+  $('.mixitup-control-active').removeClass('mixitup-control-active')
+  mixer.remove('.grid-item')
   displayedAccounts = [];
 })
 
 $(document).ready(() => {
   $('h1').fitText(1.5);
+
+  mixer = mixitup('.grid',{
+    selectors: {
+       target: '.grid-item'
+   },
+   animation: {
+       queue : true,
+       duration: 200,
+       queueLimit: 50
+   }
+  });
 })
 
 //setups
 getGlobalProps()
   // for testing only
-  .then( addUsers(['utopian-io', 'busy.org', 'blocktrades', 'sambillingham', 'kevinwong']))
+  .then( addUsers(['utopian-io', 'busy.org', 'blocktrades', 'sambillingham', 'kevinwong'], true))
   // testing
 
-
 function addUsers(users){
+  var sort = ($('.mixitup-control-active').length) ? $('.mixitup-control-active').data('btn-sort') : false
   getAccounts(users)
     .then(data => proccessData(data))
-    .then(data => displayAccounts(data))
+    .then(data => displayAccounts(data, sort))
 }
 
-function displayAccounts(newAccounts){
+function displayAccounts(newAccounts, sortValue ){
 
   let allAccounts = displayedAccounts.concat(newAccounts);
   let allAccountsNoDup = removeDuplicates(allAccounts, 'name');
   displayedAccounts = allAccountsNoDup
-  console.log(displayedAccounts)
 
-  $('.grid').empty();
-
-  $grid = $('.grid');
+  mixer.remove('.grid-item')
 
   allAccountsNoDup.forEach(user => {
     let template =
-      `<div class="grid-item col-xl-15 col-lg-3 col-md-4 col-6"
+      `<div class="grid-item col-xl-15 col-lg-3 col-md-4 col-6 name-${(user.name).replace(/\./g, '-')}"
         data-name="@${user.name}"
         data-reputation="${user.rep}"
         data-steempower="${ user.effectiveSp }"
@@ -91,20 +104,17 @@ function displayAccounts(newAccounts){
 
       <button type="button" class="btn btn-secondary btn-sm remove-user"> X Remove</button>
       </div>`;
-      $grid.append(template);
+
+        mixer.append(template);
+
   })
 
-  mixer = mixitup('.grid',{
-    selectors: {
-       target: '.grid-item'
-   },
-   animation: {
-       duration: 300
-   }
-  });
+  if(sortValue){
+    let reSort = $('*[data-btn-sort="' + sortValue + '"]').data('sort')
 
-
-
+    mixer.sort(reSort)
+    mixer.forceRefresh();
+  }
 }
 
 function getGlobalProps(){
@@ -128,7 +138,6 @@ function proccessData(accounts){
   accounts.forEach( user => {
     // store meta Data
     let jsonData = user.json_metadata ? JSON.parse(user.json_metadata).profile : {}
-
     // steem power calc
     let vestingShares = user.vesting_shares;
     let delegatedVestingShares = user.delegated_vesting_shares;
@@ -192,16 +201,9 @@ function calcRelativeAge(date){
   let now = moment();
   let dateCalc = moment(date);
   let calcDiff = dateCalc.diff(now);
-  console.log(now)
-  console.log(dateCalc)
 
   var age = moment.duration(calcDiff);
-
   let relativeAge = `${-age.days()}D`
-
-  console.log(-age.days(), 'days')
-  console.log(-age.months(), 'months')
-  console.log(-age.years(), 'years')
 
   if(-age.months() >= 1 )
     relativeAge = `${-age.months()}M - ${-age.days()}D`
