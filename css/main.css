@@ -5,8 +5,8 @@ body {
 header.jumbotron {
   background:
   linear-gradient(
-  rgba(233,236,239, 0.90),
-  rgba(233,236,239, 0.90)
+  rgba(233,236,239, 0.87),
+  rgba(233,236,239, 0.87)
 ),
   url(../img/pattern.png);
   background-position: center;
@@ -54,9 +54,13 @@ hr.below {
 }
 
 .sort-buttons .btn {
+  background-color: #f1f1f1;
+  border-color: #f1f1f1;
     margin: 5px 0;
 }
-
+.mixitup-control-active {
+  border-color: #007bff;
+}
 
 .grid h3,
 .grid h4 {
