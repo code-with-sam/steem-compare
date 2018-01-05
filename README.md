@@ -13,12 +13,9 @@ open index.html
 There are currently no build tools or pre-processing in use so you can edid main.css/main.js directly and refresh in the browser to see updates.
 
 # Dependecies 
-[steem-js](https://github.com/drov0/steemsnippets/tree/master/steemjs)
-[MixItUp](https://www.kunkalabs.com/mixitup/) 
-[Moment js](https://momentjs.com)
-# Thanks
-The project is built onto of the fantastic [steem-js](https://github.com/drov0/steemsnippets/tree/master/steemjs) library.
-Shout out to [@stoodkev](https://steemit.com/@stoodkev) for his steemjs tutorials.
+- [steem-js](https://github.com/drov0/steemsnippets/tree/master/steemjs)
+- [MixItUp](https://www.kunkalabs.com/mixitup/) 
+- [Moment js](https://momentjs.com)
 
 # Upcoming updates ->
 A couple features spring to mind to add next -
@@ -42,3 +39,8 @@ I would also like to bring in some extra information perhaps -
 
 # V0.1
 - Inital Project Build
+
+
+# Thanks
+The project is built onto of the fantastic [steem-js](https://github.com/drov0/steemsnippets/tree/master/steemjs) library.
+Shout out to [@stoodkev](https://steemit.com/@stoodkev) for his steemjs tutorials.
