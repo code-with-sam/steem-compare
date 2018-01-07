@@ -31,6 +31,10 @@ I would also like to bring in some extra information perhaps -
 - latest rewards
 - Average user engagement
 
+
+# V0.2.1
+- add query to check for active steem server
+
 # V0.2
 - Add Sorting (reputation, effective SP, account value, post count, followers and account age)
 - Responsive Updates sm + lg fixes
