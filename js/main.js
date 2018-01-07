@@ -49,10 +49,11 @@ $(document).ready(() => {
 })
 
 //setups
-getGlobalProps()
-  // for testing only
-  .then( addUsers(['utopian-io', 'busy.org', 'blocktrades', 'sambillingham', 'kevinwong'], true))
-  // testing
+findAvailableSteemApi()
+  .then( server => {
+      getGlobalProps(server)
+          .then( addUsers(['utopian-io', 'busy.org', 'blocktrades', 'sambillingham', 'kevinwong'], true))
+  })
 
 function addUsers(users){
   var sort = ($('.mixitup-control-active').length) ? $('.mixitup-control-active').data('btn-sort') : false
@@ -117,7 +118,8 @@ function displayAccounts(newAccounts, sortValue ){
   }
 }
 
-function getGlobalProps(){
+function getGlobalProps(server){
+  steem.api.setOptions({ url: server });
   return steem.api.getDynamicGlobalProperties((err, result) => {
     totalVestingShares = result.total_vesting_shares;
     totalVestingFundSteem = result.total_vesting_fund_steem;
@@ -218,4 +220,37 @@ function removeDuplicates(myArr, prop) {
     return myArr.filter((obj, pos, arr) => {
         return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
     });
+}
+
+function findAvailableSteemApi(){
+  return new Promise((resolve, reject) => {
+    const apiServers =  [
+            'wss://steemd.privex.io',
+            'wss://rpc.buildteam.io',
+            'wss://steemd.pevo.science']
+
+    let connections = []
+    let availableServers = [];
+    apiServers.forEach( (s,i,arr) => {
+      availableServers.push( new Promise((resolveList, rej) => {
+
+        connections[i] = new WebSocket(apiServers[i])
+        connections[i].onerror = (err) => {
+          console.warn(`Can\'t connect to ${apiServers[i]}, trying next server...`)
+        }
+        connections[i].onopen = () => {
+          resolveList(apiServers[i])
+          connections[i].close()
+        }
+      }))
+    })
+    Promise.all(availableServers).then( data => {
+      console.log(data)
+      if (data.length >= 1){
+          resolve(data[0]);
+      } else {
+          reject()
+      }
+    })
+  })
 }
