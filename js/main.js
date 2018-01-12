@@ -23,11 +23,19 @@ function getQueryParams() {
 }
 function getValueListFromParams(){
     let paramArr = getQueryParams()
-    let list = (paramArr[0][1] !== undefined) ? paramArr.map(param => param[1]) : false
+    let list = (paramArr[0][1] !== undefined && paramArr[0][1] !== '') ? paramArr.map(param => param[1]) : false
     return list
 }
 
-
+function setQueryUrl(userNameArray){
+  let baseurl = window.location.href
+  let url = baseurl.split('?')[0] + '?'
+  for (let i = 0; i < userNameArray.length; i++) {
+    url = url + `user${i}=${userNameArray[i]}&`
+  }
+  let finalUrl = url.slice(0, -1);
+  history.pushState(null, null, finalUrl);
+}
 
 
 // UI CONTROLS
@@ -147,7 +155,6 @@ function displayAccounts(newAccounts, sortValue ){
 
     mixer.sort(reSort)
     mixer.forceRefresh();
-    
   }
 }
 
@@ -258,7 +265,6 @@ function removeDuplicates(myArr, prop) {
 function findAvailableSteemApi(){
   return new Promise((resolve, reject) => {
     const apiServers =  [
-            'wss://steemd.privex.io',
             'wss://rpc.buildteam.io',
             'wss://steemd.pevo.science']
 
