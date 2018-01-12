@@ -9,6 +9,23 @@ let $grid;
 
 let mixer;
 
+
+function getQueryParams() {
+   let query = window.location.search.substring(1);
+   let allParams = query.split("&");
+
+   return allParams.map(value => {
+       let item = value.split('=');
+       return [item[0], item[1]];
+   })
+}
+function getValueListFromParams(){
+  let paramArr = getQueryParams()
+  return paramArr.map(param => param[1])
+}
+
+console.log( getValueListFromParams() )
+
 // UI CONTROLS
 $('.grid').on('click', '.remove-user', (e) => {
   let user = $(e.currentTarget).parent().data('name');
