@@ -45,7 +45,7 @@ $('.grid').on('click', '.remove-user', (e) => {
   let target = '.name-'+ (user.substr(1)).replace(/\./g, '-');
 
   displayedAccounts.splice(index, 1);
-
+  setQueryUrl(displayedAccounts)
   mixer.remove(target)
 });
 
@@ -53,6 +53,7 @@ $('.search-btn').on('click', (e) => {
   let data = $('.search').val();
   let users = data.split(',').map(user => user.trim() );
   addUsers(users, false)
+  setQueryUrl(users)
 });
 
 $('.clear-btn').on('click', (e) => {
@@ -60,6 +61,7 @@ $('.clear-btn').on('click', (e) => {
   $('.mixitup-control-active').removeClass('mixitup-control-active')
   mixer.remove('.grid-item')
   displayedAccounts = [];
+  setQueryUrl([''])
 })
 
 $(document).ready(() => {
@@ -87,7 +89,6 @@ findAvailableSteemApi()
 
 function checkForUsersAndSearch(){
   let list = getValueListFromParams()
-  console.log('list', list)
   if(!list) {
     addUsers(defaultUserNames, true)
   } else {
@@ -284,7 +285,6 @@ function findAvailableSteemApi(){
       }))
     })
     Promise.all(availableServers).then( data => {
-      console.log(data)
       if (data.length >= 1){
           resolve(data[0]);
       } else {
