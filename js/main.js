@@ -11,33 +11,6 @@ let mixer;
 
 const defaultUserNames = ['utopian-io', 'busy.org', 'blocktrades', 'sambillingham', 'kevinwong'];
 
-
-function getQueryParams() {
-   let query = window.location.search.substring(1);
-   let allParams = query.split("&");
-
-   return allParams.map(value => {
-       let item = value.split('=');
-       return [item[0], item[1]];
-   })
-}
-function getValueListFromParams(){
-    let paramArr = getQueryParams()
-    let list = (paramArr[0][1] !== undefined && paramArr[0][1] !== '') ? paramArr.map(param => param[1]) : false
-    return list
-}
-
-function setQueryUrl(userNameArray){
-  let baseurl = window.location.href
-  let url = baseurl.split('?')[0] + '?'
-  for (let i = 0; i < userNameArray.length; i++) {
-    url = url + `user${i}=${userNameArray[i]}&`
-  }
-  let finalUrl = url.slice(0, -1);
-  history.pushState(null, null, finalUrl);
-}
-
-
 // UI CONTROLS
 $('.grid').on('click', '.remove-user', (e) => {
   let user = $(e.currentTarget).parent().data('name');
@@ -64,6 +37,29 @@ $('.clear-btn').on('click', (e) => {
   setQueryUrl([''])
 })
 
+$('.share-btn').on('click', (e) => {
+  let url = window.location.href
+
+  $('.share-btn-text').text(url)
+
+  let shareLink = document.querySelector('.share-btn-text');
+  let range = document.createRange();
+  range.selectNode(shareLink);
+  window.getSelection().addRange(range);
+
+  try {
+    let successful = document.execCommand('copy');
+    let msg = successful ? 'successful' : 'unsuccessful';
+    $('.share-btn-text').text('Link Copied').addClass('active')
+    setTimeout( () => $('.share-btn-text').removeClass('active'), 1500)
+  } catch(err) {
+      console.log(err);
+  }
+  window.getSelection().removeAllRanges();
+})
+
+// INIT!!
+
 $(document).ready(() => {
   $('h1').fitText(1.5);
 
@@ -89,9 +85,11 @@ findAvailableSteemApi()
 
 function checkForUsersAndSearch(){
   let list = getValueListFromParams()
+  console.log('LIST: ', list )
   if(!list) {
     addUsers(defaultUserNames, true)
   } else {
+    console.log('LIST: ', list )
     addUsers(list, true)
   }
 }
@@ -292,4 +290,30 @@ function findAvailableSteemApi(){
       }
     })
   })
+}
+
+
+function getQueryParams() {
+   let query = window.location.search.substring(1);
+   let allParams = query.split("&");
+
+   return allParams.map(value => {
+       let item = value.split('=');
+       return [item[0], item[1]];
+   })
+}
+function getValueListFromParams(){
+    let paramArr = getQueryParams()
+    let list = (paramArr[0][1] !== undefined && paramArr[0][1] !== '') ? paramArr.map(param => param[1]) : false
+    return list
+}
+
+function setQueryUrl(userNameArray){
+  let baseurl = window.location.href
+  let url = baseurl.split('?')[0] + '?'
+  for (let i = 0; i < userNameArray.length; i++) {
+    url = url + `user${i}=${userNameArray[i]}&`
+  }
+  let finalUrl = url.slice(0, -1);
+  history.pushState(null, null, finalUrl);
 }
