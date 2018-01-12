@@ -9,6 +9,8 @@ let $grid;
 
 let mixer;
 
+const defaultUserNames = ['utopian-io', 'busy.org', 'blocktrades', 'sambillingham', 'kevinwong'];
+
 
 function getQueryParams() {
    let query = window.location.search.substring(1);
@@ -20,11 +22,13 @@ function getQueryParams() {
    })
 }
 function getValueListFromParams(){
-  let paramArr = getQueryParams()
-  return paramArr.map(param => param[1])
+    let paramArr = getQueryParams()
+    let list = (paramArr[0][1] !== undefined) ? paramArr.map(param => param[1]) : false
+    return list
 }
 
-console.log( getValueListFromParams() )
+
+
 
 // UI CONTROLS
 $('.grid').on('click', '.remove-user', (e) => {
@@ -69,8 +73,19 @@ $(document).ready(() => {
 findAvailableSteemApi()
   .then( server => {
       getGlobalProps(server)
-          .then( addUsers(['utopian-io', 'busy.org', 'blocktrades', 'sambillingham', 'kevinwong'], true))
+      .then(checkForUsersAndSearch())
   })
+
+
+function checkForUsersAndSearch(){
+  let list = getValueListFromParams()
+  console.log('list', list)
+  if(!list) {
+    addUsers(defaultUserNames, true)
+  } else {
+    addUsers(list, true)
+  }
+}
 
 function addUsers(users){
   var sort = ($('.mixitup-control-active').length) ? $('.mixitup-control-active').data('btn-sort') : false
@@ -132,6 +147,7 @@ function displayAccounts(newAccounts, sortValue ){
 
     mixer.sort(reSort)
     mixer.forceRefresh();
+    
   }
 }
 
