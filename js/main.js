@@ -10,6 +10,7 @@ let $grid;
 let mixer;
 
 const defaultUserNames = ['utopian-io', 'busy.org', 'blocktrades', 'sambillingham', 'kevinwong'];
+let URL = window.location.href;
 
 // UI CONTROLS
 $('.grid').on('click', '.remove-user', (e) => {
@@ -18,7 +19,6 @@ $('.grid').on('click', '.remove-user', (e) => {
   let target = '.name-'+ (user.substr(1)).replace(/\./g, '-');
 
   displayedAccounts.splice(index, 1);
-  setQueryUrl(displayedAccounts)
   mixer.remove(target)
 });
 
@@ -26,7 +26,6 @@ $('.search-btn').on('click', (e) => {
   let data = $('.search').val();
   let users = data.split(',').map(user => user.trim() );
   addUsers(users, false)
-  setQueryUrl(users)
 });
 
 $('.clear-btn').on('click', (e) => {
@@ -34,28 +33,15 @@ $('.clear-btn').on('click', (e) => {
   $('.mixitup-control-active').removeClass('mixitup-control-active')
   mixer.remove('.grid-item')
   displayedAccounts = [];
-  setQueryUrl([''])
 })
 
 $('.share-btn').on('click', (e) => {
-  let url = window.location.href
-
-  $('.share-btn-text').text(url)
-
-  let shareLink = document.querySelector('.share-btn-text');
-  let range = document.createRange();
-  range.selectNode(shareLink);
-  window.getSelection().addRange(range);
-
-  try {
-    let successful = document.execCommand('copy');
-    let msg = successful ? 'successful' : 'unsuccessful';
+    $('.share-btn').attr('data-clipboard-text', URL)
+    var clipboard = new Clipboard('.share-btn');
     $('.share-btn-text').text('Link Copied').addClass('active')
     setTimeout( () => $('.share-btn-text').removeClass('active'), 1500)
-  } catch(err) {
-      console.log(err);
-  }
-  window.getSelection().removeAllRanges();
+    history.pushState(null, null, URL);
+    e.preventDefault()
 })
 
 // INIT!!
@@ -85,11 +71,9 @@ findAvailableSteemApi()
 
 function checkForUsersAndSearch(){
   let list = getValueListFromParams()
-  console.log('LIST: ', list )
   if(!list) {
     addUsers(defaultUserNames, true)
   } else {
-    console.log('LIST: ', list )
     addUsers(list, true)
   }
 }
@@ -149,11 +133,16 @@ function displayAccounts(newAccounts, sortValue ){
 
   })
 
+
+
   if(sortValue){
     let reSort = $('*[data-btn-sort="' + sortValue + '"]').data('sort')
 
     mixer.sort(reSort)
     mixer.forceRefresh();
+  } else {
+    let accountsNamesForUrl = displayedAccounts.map( user => user.name )
+    setQueryUrl(accountsNamesForUrl)
   }
 }
 
@@ -316,4 +305,5 @@ function setQueryUrl(userNameArray){
   }
   let finalUrl = url.slice(0, -1);
   history.pushState(null, null, finalUrl);
+  URL = finalUrl
 }
