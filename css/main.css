@@ -47,10 +47,27 @@ hr.below {
 }
 
 .searh-buttons {
-  text-align: center;
+  width: 95%;
+  margin: 0 auto;
+  text-align: left;
 }
 .searh-buttons .btn {
   margin-bottom: 20px;
+}
+.searh-buttons .share-btn {
+  float: right;
+}
+.share-btn-text {
+  opacity: 0;
+  max-width: 150px;
+  float: right;
+  overflow: hidden;
+  transition: opacity 200ms;
+  padding: 12px 0;
+  margin: 0 20px;
+}
+.share-btn-text.active {
+  opacity: 1;
 }
 
 .sort-buttons .btn {
