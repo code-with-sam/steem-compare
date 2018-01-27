@@ -178,36 +178,3 @@ export function proccessData(accounts){
 
   return processAllData;
 }
-
-
-
-export function findAvailableSteemApi(){
-  return new Promise((resolve, reject) => {
-    const apiServers =  [
-            'wss://rpc.buildteam.io',
-            'wss://steemd.pevo.science']
-
-    let connections = []
-    let availableServers = [];
-    apiServers.forEach( (s,i,arr) => {
-      availableServers.push( new Promise((resolveList, rej) => {
-
-        connections[i] = new WebSocket(apiServers[i])
-        connections[i].onerror = (err) => {
-          console.warn(`Can\'t connect to ${apiServers[i]}, trying next server...`)
-        }
-        connections[i].onopen = () => {
-          resolveList(apiServers[i])
-          connections[i].close()
-        }
-      }))
-    })
-    Promise.all(availableServers).then( data => {
-      if (data.length >= 1){
-          resolve(data[0]);
-      } else {
-          reject()
-      }
-    })
-  })
-}

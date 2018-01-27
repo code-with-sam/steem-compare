@@ -4,6 +4,8 @@ import * as steem from './modules/steemActions.js'
 
 export let mixer;
 
+STEEM_SERVER = 'https://api.steemit.com';
+
 // UI CONTROLS
 ui.initUiActions();
 
@@ -25,8 +27,6 @@ $(document).ready(() => {
 })
 
 //setups
-steem.findAvailableSteemApi()
-  .then( server => {
-      steem.getGlobalProps(server)
-      .then(steem.checkForUsersAndSearch())
-  })
+
+steem.getGlobalProps(STEEM_SERVER)
+  .then(steem.checkForUsersAndSearch())
