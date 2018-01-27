@@ -174,10 +174,42 @@ export function proccessData(accounts){
         for (let i = 0; i < data.length; i++) {
           accountsData[i].usdValue = parseInt(data[i])
         }
+    })
+
+  let extraStats = accounts.map( user => getStats(user.name))
+  
+  Promise.all(extraStats)
+    .then(data => {
+        for (let i = 0; i < data.length; i++) {
+          accountsData[i].averageVotes = data[i].averageVotes
+          accountsData[i].averageReplies = data[i].averageReplies
+          accountsData[i].wordCount = data[i].wordCount
+        }
         resolve(accountsData);
     })
 
   });
 
   return processAllData;
+}
+
+function getStats(username){
+    return new Promise( (resolve,reject) => {
+      steem.api.getState(`/@${username}/`, (err, result) => {
+        let resultsArray = [];
+        for ( let post in result.content ){
+          console.log(post)
+          resultsArray.push({
+            votes: result.content[post].net_votes,
+            replies: result.content[post].children,
+            length: result.content[post].body.split(' ').length
+          })
+        }
+         resolve({
+          averageVotes: resultsArray.reduce((a,b) => a + b.votes, 0) / resultsArray.length,
+          averageReplies: resultsArray.reduce((a,b) => a + b.replies, 0) / resultsArray.length,
+          wordCount:  resultsArray.reduce((a,b) => a + b.length, 0) / resultsArray.length
+        })
+      })
+    })
 }
