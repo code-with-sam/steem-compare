@@ -30,7 +30,7 @@ export function checkForUsersAndSearch(){
   }
 }
 
-export function addUsers(users){
+export function addUsers(users, sortType){
   var sort = ($('.mixitup-control-active').length) ? $('.mixitup-control-active').data('btn-sort') : false
   getAccounts(users)
     .then(data => proccessData(data) )
@@ -38,7 +38,7 @@ export function addUsers(users){
 }
 
 export function displayAccounts(newAccounts, sortValue ){
-
+  console.log(newAccounts)
   let allAccounts = displayedAccounts.concat(newAccounts);
   let allAccountsNoDup = util.removeDuplicates(allAccounts, 'name');
   displayedAccounts = allAccountsNoDup
@@ -56,7 +56,7 @@ export function displayAccounts(newAccounts, sortValue ){
         data-followers="${user.followerCount}"
         data-accountage="${user.accountAgeMilliseconds}" >
 
-      <a href="https://steemit.com/@${user.name}" class="user-link"><img src="${user.image}" class="rounded-circle" height="80px" width="80px"></a>
+      <a href="https://steemit.com/@${user.name}" class="user-link"><img src="${user.image}" onerror="this.src='img/default-user.jpg'" class="rounded-circle" height="80px" width="80px"></a>
       <li><a href="https://steemit.com/@${user.name}" class="user-value user-name user-link">${user.name}</a> <span class="badge badge-secondary">${user.rep}</span></li>
       <li>EFFECTIVE SP: <span class="user-value">${ (user.effectiveSp).toLocaleString() }</span></li>
       <li>STEEMPOWER: <span class="user-value">${user.sp} <br><span class="steam-calc">(+ ${user.delegatedSpIn} - ${user.delegatedSpOut})</span></span></li>
@@ -76,9 +76,13 @@ export function displayAccounts(newAccounts, sortValue ){
 
       <li>Age: <span class="user-value">${ (user.accountAge) }</span></li>
 
+      <li  class="user-extra-stat">Average Replies: <span class="user-value ">${ (user.averageReplies) }</span></li>
+      <li class="user-extra-stat">Average Votes: <span class="user-value ">${ (user.averageVotes) }</span></li>
+      <li class="user-extra-stat">Average Word Count: <span class="user-value ">${ (user.wordCount) }</span></li>
+
       <li><span class="user-value">💵 $${(user.usdValue).toLocaleString()}</span></li>
 
-      <button type="button" class="btn btn-secondary btn-sm remove-user"> X Remove</button>
+      <button type="button" class="btn btn-secondary btn-sm remove-user user-extra-stat"> X Remove</button>
       </div>`;
 
         mixer.append(template);
@@ -93,6 +97,9 @@ export function displayAccounts(newAccounts, sortValue ){
     mixer.sort(reSort)
     mixer.forceRefresh();
   } else {
+    mixer.sort('reputation:desc')
+    mixer.forceRefresh();
+    
     let accountsNamesForUrl = displayedAccounts.map( user => user.name )
     util.setQueryUrl(accountsNamesForUrl)
   }
@@ -121,8 +128,7 @@ export function proccessData(accounts){
   let processAllData = new Promise((resolve, reject) => {
 
   accounts.forEach( user => {
-    // store meta Data
-    let jsonData = user.json_metadata ? JSON.parse(user.json_metadata).profile : {}
+
     // steem power calc
     let vestingShares = user.vesting_shares;
     let delegatedVestingShares = user.delegated_vesting_shares;
@@ -136,9 +142,25 @@ export function proccessData(accounts){
     let votePower = user.voting_power += (10000 * lastVoteTime / 432000);
     votePower = Math.min(votePower / 100, 100).toFixed(2);
 
+    let profileImage = 'img/default-user.jpg';
+
+    if (user.json_metadata == '' ||
+        user === undefined ||
+        user.json_metadata == 'undefined' ||
+        user.json_metadata === undefined ) {
+      user.json_metadata = { profile_image : ''}
+    } else {
+      user.json_metadata = user.json_metadata ? JSON.parse(user.json_metadata).profile : {};
+    }
+
+    if (user.json_metadata === undefined){
+      user.json_metadata = { profile_image : ''}
+    }
+    profileImage = user.json_metadata.profile_image ? 'https://steemitimages.com/2048x512/' + user.json_metadata.profile_image : '';
+
     accountsData.push({
       name: user.name,
-      image: jsonData.profile_image ? 'https://steemitimages.com/2048x512/' + jsonData.profile_image : '',
+      image: profileImage,
       rep: steem.formatter.reputation(user.reputation),
       effectiveSp: parseInt(steemPower  + delegatedSteemPower - -outgoingSteemPower),
       sp: parseInt(steemPower).toLocaleString(),
@@ -167,6 +189,7 @@ export function proccessData(accounts){
         }
     })
 
+
   let usdValues = accounts.map( user => steem.formatter.estimateAccountValue(user) )
 
   Promise.all(usdValues)
@@ -174,19 +197,20 @@ export function proccessData(accounts){
         for (let i = 0; i < data.length; i++) {
           accountsData[i].usdValue = parseInt(data[i])
         }
+              resolve(accountsData);
     })
 
-  let extraStats = accounts.map( user => getStats(user.name))
-  
-  Promise.all(extraStats)
-    .then(data => {
-        for (let i = 0; i < data.length; i++) {
-          accountsData[i].averageVotes = data[i].averageVotes
-          accountsData[i].averageReplies = data[i].averageReplies
-          accountsData[i].wordCount = data[i].wordCount
-        }
-        resolve(accountsData);
-    })
+  // let extraStats = accounts.map( user => getStats(user.name))
+  //
+  // Promise.all(extraStats)
+  //   .then(data => {
+  //       for (let i = 0; i < data.length; i++) {
+  //         accountsData[i].averageVotes = data[i].averageVotes
+  //         accountsData[i].averageReplies = data[i].averageReplies
+  //         accountsData[i].wordCount = data[i].wordCount
+  //       }
+  //       resolve(accountsData);
+  //   })
 
   });
 

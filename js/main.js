@@ -18,13 +18,29 @@ $(document).ready(() => {
    },
    animation: {
        queue : true,
-       duration: 200,
-       queueLimit: 50
+       duration: 0,
+       queueLimit: 500
    }
   });
 })
 
 //setups
+if ($('body').hasClass('user-compare')){
+  steemActions.getGlobalProps(STEEM_SERVER)
+    .then(steemActions.checkForUsersAndSearch())
+}
 
-steemActions.getGlobalProps(STEEM_SERVER)
-  .then(steemActions.checkForUsersAndSearch())
+if ($('body').hasClass('follower-compare')){
+  steem.api.getFollowers('sambillingham', '', 'blog', 1000, function(err, result) {
+      // let followers = result.reduce( (a,b) => a + ', ' + b.follower )
+      let followers = result.map( (user) => user.follower )
+
+      console.log(followers)
+      steemActions.getGlobalProps(STEEM_SERVER)
+        .then( () => {
+          steemActions.addUsers(followers, true)
+      })
+
+  });
+
+}

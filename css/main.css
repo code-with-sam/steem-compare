@@ -150,3 +150,12 @@ footer a:hover {
     max-width: 20%;
   }
 }
+
+.mixitup-control-active {
+  border-color: #007aff !important;
+  border-width: 2px;
+}
+
+.follower-compare .user-extra-stat{
+  display: none;
+}
