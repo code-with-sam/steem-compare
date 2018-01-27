@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Steem Compare - The tool for comparing your steem followers</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/main.css">
+    </head>
+
+    <body>
+        <header class="jumbotron">
+          <div class="container">
+            <h1>Follower Compare</h1>
+            <div class="form-group">
+              <input type="text" placeholder="username" class="form-control search" >
+              <a class="btn btn-primary btn-lg search-btn" href="#" role="button">👨‍👩‍👧‍👧 Compare Followers</a>
+            </div>
+          </div>
+        </header>
+
+        <div class="container">
+        <hr class="above">
+        <div class="sort-buttons">
+          <span> | Sort Users | </span>
+          <a class="btn btn-light btn-sm sort-btn" data-btn-sort="reputation" data-sort="reputation:desc" href="#" role="button">👏 Reputation</a>
+          <a class="btn btn-light btn-sm sort-btn" data-btn-sort="steempower" data-sort="steempower:desc" href="#" role="button">💪 Effective SP</a>
+          <a class="btn btn-light btn-sm sort-btn" data-btn-sort="value" data-sort="value:desc" href="#" role="button">💵 Account Value</a>
+          <a class="btn btn-light btn-sm sort-btn" data-btn-sort="postcount" data-sort="postcount:desc" href="#" role="button">📝 Post Count</a>
+          <a class="btn btn-light btn-sm sort-btn" data-btn-sort="followers" data-sort="followers:desc" href="#" role="button">👨‍👩‍👧‍👦 Followers</a>
+          <a class="btn btn-light btn-sm sort-btn" data-btn-sort="accountage" data-sort="accountage:asc" href="#" role="button">⏰ Account Age</a>
+        </div>
+        <hr class="below">
+
+
+        <div class="row grid">
+
+        </div>
+
+        <hr>
+        <footer>Created by <a href="http://steemit.com/@sambillingham">Sam Billingham</a></footer>
+      </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+        <script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/FitText.js/1.2.0/jquery.fittext.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mixitup/3.2.2/mixitup.min.js"></script>
+        <script src="js/main.js" type="module"></script>
+    </body>
+</html>
