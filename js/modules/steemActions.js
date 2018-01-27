@@ -33,7 +33,7 @@ export function checkForUsersAndSearch(){
 export function addUsers(users){
   var sort = ($('.mixitup-control-active').length) ? $('.mixitup-control-active').data('btn-sort') : false
   getAccounts(users)
-    .then(data => proccessData(data))
+    .then(data => proccessData(data) )
     .then(data => displayAccounts(data, sort))
 }
 
@@ -99,16 +99,19 @@ export function displayAccounts(newAccounts, sortValue ){
 }
 
 export function getGlobalProps(server){
-  steem.api.setOptions({ url: server });
-  return steem.api.getDynamicGlobalProperties((err, result) => {
-    totalVestingShares = result.total_vesting_shares;
-    totalVestingFundSteem = result.total_vesting_fund_steem;
+  return new Promise((resolve, reject) => {
+    steem.api.setOptions({ url: server });
+    steem.api.getDynamicGlobalProperties((err, result) => {
+      totalVestingShares = result.total_vesting_shares;
+      totalVestingFundSteem = result.total_vesting_fund_steem;
+      resolve()
+    })
   })
 }
 
 
 export function getAccounts(accountNames){
-    return steem.api.getAccounts(accountNames, (err, response) => response )
+    return steem.api.getAccountsAsync(accountNames)
 };
 
 export function proccessData(accounts){
@@ -154,7 +157,7 @@ export function proccessData(accounts){
   });
 
 
-  let followerAndFollowingCount = accountsData.map( user => steem.api.getFollowCount(user.name))
+  let followerAndFollowingCount = accountsData.map( user => steem.api.getFollowCountAsync(user.name))
 
   Promise.all(followerAndFollowingCount)
     .then(data => {

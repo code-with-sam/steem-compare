@@ -1,11 +1,9 @@
 // import * as util from './modules/util.js'
 import * as ui from './modules/uiActions.js'
-import * as steem from './modules/steemActions.js'
+import * as steemActions from './modules/steemActions.js'
 
 export let mixer;
-
-STEEM_SERVER = 'https://api.steemit.com';
-
+const STEEM_SERVER = 'https://api.steemit.com'
 // UI CONTROLS
 ui.initUiActions();
 
@@ -28,5 +26,5 @@ $(document).ready(() => {
 
 //setups
 
-steem.getGlobalProps(STEEM_SERVER)
-  .then(steem.checkForUsersAndSearch())
+steemActions.getGlobalProps(STEEM_SERVER)
+  .then(steemActions.checkForUsersAndSearch())
