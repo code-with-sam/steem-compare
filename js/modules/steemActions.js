@@ -78,9 +78,9 @@ export function displayAccounts(newAccounts, sortValue ){
 
       <li>Age: <span class="user-value">${ (user.accountAge) }</span></li>
 
-      <li  class="user-extra-stat">Average Replies: <span class="user-value ">${ (user.averageReplies) }</span></li>
-      <li class="user-extra-stat">Average Votes: <span class="user-value ">${ (user.averageVotes) }</span></li>
-      <li class="user-extra-stat">Average Word Count: <span class="user-value ">${ (user.wordCount) }</span></li>
+      <li  class="user-extra-stat">Average Replies: <span class="user-value ">${ Math.round(user.averageReplies) }</span></li>
+      <li class="user-extra-stat">Average Votes: <span class="user-value ">${ Math.round(user.averageVotes) }</span></li>
+      <li class="user-extra-stat">Average Word Count: <span class="user-value ">${ Math.round(user.wordCount) }</span></li>
 
       <li><span class="user-value">💵 $${(user.usdValue).toLocaleString()}</span></li>
 
