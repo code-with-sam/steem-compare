@@ -181,7 +181,6 @@ export function proccessData(accounts){
     });
   });
 
-
   let followerAndFollowingCount = accountsData.map( user => steem.api.getFollowCountAsync(user.name))
 
   Promise.all(followerAndFollowingCount)
