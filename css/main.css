@@ -159,3 +159,11 @@ footer a:hover {
 .follower-compare .user-extra-stat{
   display: none;
 }
+.username-search-group {
+  text-align: center;
+}
+.follower-compare .search,
+.follower-compare .username-btn {
+  display: inline;
+  width: auto;
+}
