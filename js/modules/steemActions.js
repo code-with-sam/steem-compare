@@ -206,7 +206,7 @@ export function proccessData(accounts){
     })
 
       if (USER_COMPARE){
-
+        NProgress.inc()
         let extraStats = accounts.map( user => getStats(user.name))
 
         Promise.all(extraStats)

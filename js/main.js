@@ -26,12 +26,12 @@ $(document).ready(() => {
 
 //setups
 if ($('body').hasClass('user-compare')){
+  NProgress.start();
   steemActions.getGlobalProps(STEEM_SERVER)
     .then(steemActions.checkForUsersAndSearch())
 }
 
 if ($('body').hasClass('follower-compare')){
-
   $('.username-btn').on('click', () => {
     let data = $('.search').val().trim();
     getFollowers(data)
@@ -41,7 +41,9 @@ if ($('body').hasClass('follower-compare')){
 
 function getFollowers(username){
   NProgress.start();
-  NProgress.configure({ trickleSpeed: 50, minimum: 0.2 });
+  NProgress.configure({
+    trickleSpeed: 50,
+    minimum: 0.2 });
 
   steem.api.getFollowers(username, '', 'blog', 1000, function(err, result) {
       let followers = result.map( (user) => user.follower )
