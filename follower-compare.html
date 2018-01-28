@@ -3,35 +3,29 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Steem Compare - The tool for organising steem user accounts</title>
+        <title>Steem Compare - The tool for comparing your steem followers</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css">
     </head>
 
-    <body class="user-compare">
+    <body class="follower-compare">
       <nav class="navbar navbar-dark bg-dark">
-         <a class="navbar-brand" href="/">STEEM COMPARE</a>
+        <a class="navbar-brand" href="/">STEEM COMPARE</a>
          <nav>
-          <a class="nav-item btn btn-secondary active" href="index.html">User compare</a>
-          <a class="nav-item btn btn-secondary " href="follower-compare.html">Follower compare</a>
+          <a class="nav-item btn btn-secondary " href="index.html">User compare</a>
+          <a class="nav-item btn btn-secondary active" href="follower-compare.html">Follower compare</a>
         </nav>
       </nav>
         <header class="jumbotron">
           <div class="container">
-            <h1>Steem User Compare</h1>
-            <div class="form-group">
-              <label>enter a list of usernames to compare</label>
-              <input  type="text" placeholder="e.g utopian-io, blocktrades, busy.org" class="form-control search" >
-            </div>
-
-            <div class="searh-buttons">
-              <a class="btn btn-primary btn-lg search-btn" href="#" role="button">👨‍👩‍👧‍👧 Compare Users</a>
-              <a class="btn btn-light btn-lg clear-btn" href="#" role="button">💀 Clear All</a>
-              <a class="btn btn-primary btn-lg share-btn" href="#" role="button" data-clipboard-text="hello">⚡️ Share</a>
-              <span class="share-btn-text" href="#" ></span>
+            <h1>Follower Compare</h1>
+            <div class="form-group username-search-group">
+              <input type="text" placeholder="username" class="form-control search" >
+              <a class="btn btn-primary btn-lg username-btn" href="#" role="button">👨‍👩‍👧‍👧 Compare Followers</a>
             </div>
           </div>
         </header>
@@ -56,10 +50,9 @@
 
         <hr>
         <footer>Created by <a href="http://steemit.com/@sambillingham">Sam Billingham</a></footer>
-      </div> <!-- /container -->
+      </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
         <script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/FitText.js/1.2.0/jquery.fittext.min.js"></script>
