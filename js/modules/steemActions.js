@@ -129,7 +129,7 @@ export function proccessData(accounts){
   let accountsData = [];
 
   let processAllData = new Promise((resolve, reject) => {
-
+    let USER_COMPARE = $('body').hasClass('user-compare')
   accounts.forEach( user => {
 
     // steem power calc
@@ -200,22 +200,27 @@ export function proccessData(accounts){
         for (let i = 0; i < data.length; i++) {
           accountsData[i].usdValue = parseInt(data[i])
         }
-              resolve(accountsData);
+        if (!USER_COMPARE){
+          resolve(accountsData);
+        }
     })
 
-  // let extraStats = accounts.map( user => getStats(user.name))
-  //
-  // Promise.all(extraStats)
-  //   .then(data => {
-  //       for (let i = 0; i < data.length; i++) {
-  //         accountsData[i].averageVotes = data[i].averageVotes
-  //         accountsData[i].averageReplies = data[i].averageReplies
-  //         accountsData[i].wordCount = data[i].wordCount
-  //       }
-  //       resolve(accountsData);
-  //   })
+      if (USER_COMPARE){
 
-  });
+        let extraStats = accounts.map( user => getStats(user.name))
+
+        Promise.all(extraStats)
+        .then(data => {
+          for (let i = 0; i < data.length; i++) {
+            accountsData[i].averageVotes = data[i].averageVotes
+            accountsData[i].averageReplies = data[i].averageReplies
+            accountsData[i].wordCount = data[i].wordCount
+          }
+          resolve(accountsData);
+        })
+      }
+
+  })
 
   return processAllData;
 }
