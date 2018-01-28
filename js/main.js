@@ -31,10 +31,19 @@ if ($('body').hasClass('user-compare')){
 }
 
 if ($('body').hasClass('follower-compare')){
+
+  $('.username-btn').on('click', () => {
+    let data = $('.search').val().trim();
+    getFollowers(data)
+  })
+
+}
+
+function getFollowers(username){
   NProgress.start();
   NProgress.configure({ trickleSpeed: 50, minimum: 0.2 });
-  steem.api.getFollowers('sambillingham', '', 'blog', 1000, function(err, result) {
-      // let followers = result.reduce( (a,b) => a + ', ' + b.follower )
+
+  steem.api.getFollowers(username, '', 'blog', 1000, function(err, result) {
       let followers = result.map( (user) => user.follower )
 
       console.log(followers)
@@ -45,5 +54,4 @@ if ($('body').hasClass('follower-compare')){
       })
 
   });
-
 }
