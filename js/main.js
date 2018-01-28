@@ -31,6 +31,8 @@ if ($('body').hasClass('user-compare')){
 }
 
 if ($('body').hasClass('follower-compare')){
+  NProgress.start();
+  NProgress.configure({ trickleSpeed: 50, minimum: 0.2 });
   steem.api.getFollowers('sambillingham', '', 'blog', 1000, function(err, result) {
       // let followers = result.reduce( (a,b) => a + ', ' + b.follower )
       let followers = result.map( (user) => user.follower )
@@ -38,6 +40,7 @@ if ($('body').hasClass('follower-compare')){
       console.log(followers)
       steemActions.getGlobalProps(STEEM_SERVER)
         .then( () => {
+          NProgress.inc()
           steemActions.addUsers(followers, true)
       })
 

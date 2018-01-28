@@ -38,6 +38,8 @@ export function addUsers(users, sortType){
 }
 
 export function displayAccounts(newAccounts, sortValue ){
+  NProgress.inc()
+
   console.log(newAccounts)
   let allAccounts = displayedAccounts.concat(newAccounts);
   let allAccountsNoDup = util.removeDuplicates(allAccounts, 'name');
@@ -99,10 +101,11 @@ export function displayAccounts(newAccounts, sortValue ){
   } else {
     mixer.sort('reputation:desc')
     mixer.forceRefresh();
-    
+
     let accountsNamesForUrl = displayedAccounts.map( user => user.name )
     util.setQueryUrl(accountsNamesForUrl)
   }
+  NProgress.done();
 }
 
 export function getGlobalProps(server){
@@ -122,7 +125,7 @@ export function getAccounts(accountNames){
 };
 
 export function proccessData(accounts){
-
+  NProgress.inc()
   let accountsData = [];
 
   let processAllData = new Promise((resolve, reject) => {
