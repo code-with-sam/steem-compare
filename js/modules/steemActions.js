@@ -65,7 +65,8 @@ export function displayAccounts(newAccounts, sortValue ){
 
       <li>
         <div class="progress">
-          <div class="progress-bar progress-bar-striped" role="progressbar" style="width: ${user.vp}%;" aria-valuenow="${user.vp}" aria-valuemin="0" aria-valuemax="100">Vote Power ${user.vp}%</div>
+          <div class="progress-bar--content">Vote Power ${user.vp}%</div>
+          <div class="progress-bar progress-bar-striped" role="progressbar" style="width: ${user.vp}%;" aria-valuenow="${user.vp}" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
       </li>
 

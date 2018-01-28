@@ -176,3 +176,18 @@ footer a:hover {
 #nprogress .spinner {
   top: 61px;
 }
+
+.progress-bar--content{
+    text-align: center;
+    width: calc(100% - 30px);
+    position: absolute;
+    transform: translateX(-50%);
+    left: 50%;
+    color: #000;
+    font-weight: 700;
+}
+
+
+.progress-bar {
+    background-color: #65aaf3;
+}
